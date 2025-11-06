@@ -1,16 +1,6 @@
-# uts_pemob
+# Aplikasi Kuis Flutter (Proyek UTS Pemrograman Mobile)
 
-A new Flutter project.
+Ini adalah aplikasi kuis pilihan ganda yang dibangun menggunakan Flutter dan Dart. 
+Aplikasi ini menguji pengetahuan pengguna tentang logo teknologi melalui 10 pertanyaan bergambar. Pengguna dapat memasukkan nama mereka, memilih mode permainan, menjawab kuis, dan melihat skor akhir mereka.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Link figma: https://www.figma.com/design/MHxNQ3yOfdYowKcb9hmsS4/Quizette?node-id=0-1&t=FXCnucXXzvR6vCK1-1

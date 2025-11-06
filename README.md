@@ -1,4 +1,4 @@
-# Aplikasi Kuis Flutter (Proyek UTS Pemrograman Mobile)
+# Quizette (Proyek UTS Pemrograman Mobile)
 
 Ini adalah aplikasi kuis pilihan ganda yang dibangun menggunakan Flutter dan Dart. 
 Aplikasi ini menguji pengetahuan pengguna tentang logo teknologi melalui 10 pertanyaan bergambar. Pengguna dapat memasukkan nama mereka, memilih mode permainan, menjawab kuis, dan melihat skor akhir mereka.

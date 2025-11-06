@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// Widget yang dapat digunakan kembali untuk input teks
 class CustomInputField extends StatelessWidget {
   final TextEditingController controller;
   final String labelText;
@@ -13,11 +12,10 @@ class CustomInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Menggunakan ukuran layar dinamis untuk lebar field
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
-      width: screenWidth * 0.85, // 85% lebar layar
+      width: screenWidth * 0.85,
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
         controller: controller,

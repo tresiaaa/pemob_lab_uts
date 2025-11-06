@@ -3,34 +3,27 @@ description: "A new Flutter project."
 environment:
   sdk: '>=3.0.0 <4.0.0'
 
-# BAGIAN BAHAN-BAHAN UTAMA
 dependencies:
   flutter:
     sdk: flutter
   provider: ^6.0.5
+  confetti: ^0.7.0
 
-# BAGIAN PERALATAN (UNTUK TESTING)
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-# BAGIAN PENGATURAN FLUTTER (ASET & FONT)
-# Pastikan bagian 'flutter:' ini ada
 flutter:
   uses-material-design: true
 
-  # Path untuk folder gambar Anda
   assets:
     - assets/images/
 
-  # Definisi untuk font kustom Anda
   fonts:
-    # Font pertama (sejajar)
     - family: CustomFont
       fonts:
         - asset: assets/fonts/MomoTrustDisplay-Regular.ttf
 
-    # Font kedua (HARUS SEJAJAR DENGAN YANG DI ATAS)
     - family: QuestionFont
       fonts:
         - asset: assets/fonts/Boldonse-Regular.ttf

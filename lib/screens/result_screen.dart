@@ -3,120 +3,156 @@ import 'package:provider/provider.dart';
 import '../data/question.dart';
 import '../models/user_progress.dart';
 import '../widgets/custom_buttons.dart';
+import '../utils/theme_provider.dart';
+import 'package:confetti/confetti.dart';
+import 'dart:math';
 
-// WAJIB 1 & 2: Halaman, Navigasi, StatelessWidget
-class ResultScreen extends StatelessWidget {
+class ResultScreen extends StatefulWidget {
   static const routeName = '/result';
-
   const ResultScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // <<< TEMA ROCOCO DIMULAI DI SINI
-    const Color softPink = Color(0xFFF8BBD0);
-    const Color darkText = Color(0xFF4E342E);
-    const Color softWhite = Color(0xFFFFF8F8);
-    const Color hintPink = Color(0xFFF48FB1);
+  State<ResultScreen> createState() => _ResultScreenState();
+}
 
+class _ResultScreenState extends State<ResultScreen> {
+  late ConfettiController _confettiController;
+
+  @override
+  void initState() {
+    super.initState();
+    _confettiController = ConfettiController(
+      duration: const Duration(seconds: 10),
+    );
+    _confettiController.play();
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context);
     final progress = Provider.of<UserProgress>(context);
     final totalQuestions = dummyQuestions.length;
     final score = progress.score;
     double screenHeight = MediaQuery.of(context).size.height;
 
+    const Color hintPink = Color(0xFFF48FB1);
+
     return Scaffold(
-      // <<< PERUBAHAN: Latar belakang
-      backgroundColor: softWhite,
       appBar: AppBar(
-        // <<< PERUBAHAN: Warna AppBar
-        backgroundColor: softPink,
-        // <<< PERUBAHAN: Warna teks AppBar
-        foregroundColor: darkText,
         title: const Text(
           'Hasil Kuis',
-          // <<< PERUBAHAN: Font AppBar
           style: TextStyle(
             fontFamily: 'CustomFont',
             fontWeight: FontWeight.bold,
           ),
         ),
-        automaticallyImplyLeading: false, // Nonaktifkan tombol kembali
+        automaticallyImplyLeading: false,
         centerTitle: true,
-        elevation: 0, // Opsional: flat design
-      ),
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(screenHeight * 0.05),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              // <<< PERUBAHAN: Warna Ikon
-              Icon(
-                Icons.emoji_events, // Ikon piala
-                size: screenHeight * 0.1,
-                color: hintPink, // Ganti dari amber ke pink tua
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'Selamat, ${progress.username}!',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'CustomFont',
-                  // <<< PERUBAHAN: Warna teks
-                  color: darkText,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 30),
-              Card(
-                elevation: 3, // Kurangi bayangan agar lebih soft
-                // <<< PERUBAHAN: Warna kartu
-                color: Colors.white, // Putih bersih agar kontras
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(25.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Skor Akhir Anda:',
-                        // <<< PERUBAHAN: Font & Warna
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontFamily: 'CustomFont',
-                          color: darkText,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        '$score / $totalQuestions',
-                        style: TextStyle(
-                          fontSize: screenHeight * 0.08,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'CustomFont',
-                          // <<< PERUBAHAN: Warna skor
-                          color: hintPink, // Ganti dari biru ke pink tua
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 40),
-              CustomButton(
-                text: 'Main Lagi',
+        actions: [
+          Consumer<ThemeNotifier>(
+            builder: (context, notifier, child) {
+              return IconButton(
                 onPressed: () {
-                  progress.reset();
-                  Navigator.of(context)
-                      .pushNamedAndRemoveUntil('/', (route) => false);
+                  notifier.toggleTheme();
                 },
-                // <<< PERUBAHAN: Warna tombol
-                color: softPink, // Ganti dari hijau ke pink
+                icon: Icon(
+                  notifier.themeMode == ThemeMode.light
+                      ? Icons.light_mode_outlined
+                      : Icons.dark_mode_outlined,
+                ),
+              );
+            },
+          )
+        ],
+      ),
+
+      body: Stack(
+        children: [
+          Center(
+            child: Padding(
+              padding: EdgeInsets.all(screenHeight * 0.05),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    Icons.emoji_events,
+                    size: screenHeight * 0.1,
+                    color: colors.primaryColor,
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Selamat, ${progress.username}!',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'CustomFont',
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 30),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(25.0),
+                      child: Column(
+                        children: [
+                          const Text(
+                            'Skor Akhir Anda:',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontFamily: 'CustomFont',
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            '$score / $totalQuestions',
+                            style: TextStyle(
+                              fontSize: screenHeight * 0.08,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'CustomFont',
+                              color: hintPink,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  CustomButton(
+                    text: 'Main Lagi',
+                    onPressed: () {
+                      progress.reset();
+                      Navigator.of(context)
+                          .pushNamedAndRemoveUntil('/', (route) => false);
+                    },
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+
+          Align(
+            alignment: Alignment.topCenter,
+            child: ConfettiWidget(
+              confettiController: _confettiController,
+              blastDirection: pi / 2,
+              emissionFrequency: 0.02,
+              numberOfParticles: 20,
+              gravity: 0.1,
+              colors: const [
+                softPink,
+                hintPink,
+                Color(0xFFFFF8F8),
+                Color(0xFF4E342E),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

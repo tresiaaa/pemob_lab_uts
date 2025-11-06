@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../data/question.dart';
+import '../data/question.dart'; // Pastikan 'question.dart' (singular)
 import '../models/user_progress.dart';
+import '../widgets/question_card.dart'; // Kita akan pakai widget ini
 
-// WAJIB 1 & 2: Halaman, Navigasi, StatefulWidget
 class QuizScreen extends StatefulWidget {
   static const routeName = '/quiz';
 
@@ -14,7 +14,7 @@ class QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizScreen> {
-  int? _selectedAnswerIndex; // Local state untuk pilihan yang sedang diklik
+  int? _selectedAnswerIndex;
   bool _isAnswerSubmitted = false;
 
   void _handleAnswer(int selectedIndex, UserProgress progress) {
@@ -33,7 +33,6 @@ class _QuizScreenState extends State<QuizScreen> {
       _isAnswerSubmitted = true;
     });
 
-    // Pindah ke pertanyaan berikutnya atau layar hasil setelah delay
     Future.delayed(const Duration(seconds: 1), () {
       if (progress.currentQuestionIndex < dummyQuestions.length - 1) {
         progress.nextQuestion();
@@ -42,7 +41,6 @@ class _QuizScreenState extends State<QuizScreen> {
           _isAnswerSubmitted = false;
         });
       } else {
-        // WAJIB 2: Navigasi
         Navigator.of(context).pushReplacementNamed('/result');
       }
     });
@@ -50,11 +48,17 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // WAJIB 7: Mengakses State
+    // <<< TEMA ROCOCO DIMULAI DI SINI
+    const Color softPink = Color(0xFFF8BBD0);
+    const Color darkText = Color(0xFF4E342E);
+    const Color softWhite = Color(0xFFFFF8F8);
+    const Color hintPink = Color(0xFFF48FB1);
+    const Color correctGreen = Color(0xFFC8E6C9); // Hijau muda
+    const Color incorrectRed = Color(0xFFF8BBD0); // Kita pakai pink untuk salah
+
     return Consumer<UserProgress>(
       builder: (context, progress, child) {
         if (progress.username.isEmpty) {
-          // Navigasi kembali jika tidak ada nama pengguna
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pushReplacementNamed('/');
           });
@@ -62,76 +66,118 @@ class _QuizScreenState extends State<QuizScreen> {
         }
 
         final currentQuestion = dummyQuestions[progress.currentQuestionIndex];
-        // WAJIB 6: Ukuran Dinamis
         double screenHeight = MediaQuery.of(context).size.height;
 
         return Scaffold(
+          // <<< PERUBAHAN WARNA LATAR BELAKANG
+          backgroundColor: softWhite,
           appBar: AppBar(
+            // <<< PERUBAHAN WARNA APPBAR
+            backgroundColor: softPink,
+            automaticallyImplyLeading: false, // Hapus tombol kembali
+
+            // <<< PERUBAHAN: Hapus "Halo, [Nama]"
             title: Text(
-                'Halo, ${progress.username}',
-                style: const TextStyle(fontFamily: 'CustomFont')),
+              // Ganti judul menjadi progres pertanyaan
+              'Pertanyaan ${progress.currentQuestionIndex + 1}/${dummyQuestions.length}',
+              style: TextStyle(
+                  fontFamily: 'CustomFont',
+                  color: darkText,
+                  fontWeight: FontWeight.bold
+              ),
+            ),
             centerTitle: true,
           ),
-          body: Padding(
-            padding: EdgeInsets.all(screenHeight * 0.03),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Text(
-                  'Pertanyaan ${progress.currentQuestionIndex + 1} dari ${dummyQuestions.length}',
-                  style: const TextStyle(fontSize: 16),
-                ),
-                const SizedBox(height: 10),
-                // Kartu Pertanyaan
-                Card(
-                  elevation: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Text(
-                      currentQuestion.text,
-                      style: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold),
+          body: SingleChildScrollView( // Tambahkan agar bisa di-scroll
+            child: Padding(
+              padding: EdgeInsets.all(screenHeight * 0.03),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+
+                  // <<< PERUBAHAN: MENAMPILKAN GAMBAR
+                  Container(
+                    height: screenHeight * 0.25,
+                    width: double.infinity,
+                    margin: const EdgeInsets.only(bottom: 20.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: softPink, width: 2.0),
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(13.0),
+                      child: Image.asset(
+                        currentQuestion.imageUrl,
+                        fit: BoxFit.contain, // <<< GANTI JADI INI
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Center(
+                              child: Icon(Icons.broken_image_outlined, color: Colors.red, size: 40)
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                // Daftar Pilihan Jawaban
-                ...currentQuestion.options.asMap().entries.map((entry) {
-                  int optionIndex = entry.key;
-                  String optionText = entry.value;
 
-                  Color buttonColor = Colors.grey.shade200;
-                  Color textColor = Colors.black;
+                  // <<< PERUBAHAN: Menggunakan QuestionCard (widget kustom)
+                  QuestionCard(
+                    questionText: currentQuestion.text,
+                  ),
 
-                  // Logika Warna untuk Feedback (WAJIB 7)
-                  if (_isAnswerSubmitted) {
-                    if (optionIndex == currentQuestion.correctAnswerIndex) {
-                      buttonColor = Colors.green.shade200; // Jawaban benar
-                    } else if (optionIndex == _selectedAnswerIndex) {
-                      buttonColor = Colors.red.shade200; // Jawaban salah
+                  const SizedBox(height: 20),
+
+                  // Daftar Pilihan Jawaban
+                  ...currentQuestion.options.asMap().entries.map((entry) {
+                    int optionIndex = entry.key;
+                    String optionText = entry.value;
+
+                    // <<< PERUBAHAN LOGIKA WARNA TOMBOL
+                    Color buttonColor;
+                    Color textColor = darkText;
+                    BorderSide borderSide = BorderSide.none;
+
+                    if (_isAnswerSubmitted) {
+                      if (optionIndex == currentQuestion.correctAnswerIndex) {
+                        buttonColor = correctGreen; // Jawaban benar
+                      } else if (optionIndex == _selectedAnswerIndex) {
+                        buttonColor = incorrectRed; // Jawaban salah
+                        textColor = Colors.white; // Biar kontras
+                      } else {
+                        buttonColor = softWhite; // Pilihan lain
+                        borderSide = BorderSide(color: softPink, width: 1.0);
+                      }
+                    } else {
+                      buttonColor = softWhite; // Default
+                      borderSide = BorderSide(color: softPink, width: 2.0);
                     }
-                  } else if (optionIndex == _selectedAnswerIndex) {
-                    buttonColor = Colors.blue.shade200; // Pilihan yang sedang diklik
-                  }
+                    // <<< AKHIR PERUBAHAN LOGIKA WARNA
 
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    child: ElevatedButton(
-                      onPressed: () => _handleAnswer(optionIndex, progress),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: buttonColor,
-                        padding: const EdgeInsets.symmetric(vertical: 15.0),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0)),
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: ElevatedButton(
+                        onPressed: () => _handleAnswer(optionIndex, progress),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: buttonColor,
+                          padding: const EdgeInsets.symmetric(vertical: 18.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            side: borderSide, // Tambahkan border
+                          ),
+                          elevation: 2.0, // Sedikit bayangan
+                        ),
+                        child: Text(
+                          optionText,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: textColor,
+                            fontFamily: 'CustomFont',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
-                      child: Text(
-                        optionText,
-                        style: TextStyle(fontSize: 16, color: textColor),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ],
+                    );
+                  }).toList(),
+                ],
+              ),
             ),
           ),
         );

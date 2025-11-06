@@ -13,3 +13,24 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+# BAGIAN PENGATURAN FLUTTER (ASET & FONT)
+# Pastikan bagian 'flutter:' ini ada
+flutter:
+  uses-material-design: true
+
+  # Path untuk folder gambar Anda
+  assets:
+    - assets/images/
+
+  # Definisi untuk font kustom Anda
+  fonts:
+    # Font pertama (sejajar)
+    - family: CustomFont
+      fonts:
+        - asset: assets/fonts/MomoTrustDisplay-Regular.ttf
+
+    # Font kedua (HARUS SEJAJAR DENGAN YANG DI ATAS)
+    - family: QuestionFont
+      fonts:
+        - asset: assets/fonts/Boldonse-Regular.ttf

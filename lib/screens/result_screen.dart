@@ -12,17 +12,36 @@ class ResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // WAJIB 7: Mengakses State
+    // <<< TEMA ROCOCO DIMULAI DI SINI
+    const Color softPink = Color(0xFFF8BBD0);
+    const Color darkText = Color(0xFF4E342E);
+    const Color softWhite = Color(0xFFFFF8F8);
+    const Color hintPink = Color(0xFFF48FB1);
+
     final progress = Provider.of<UserProgress>(context);
     final totalQuestions = dummyQuestions.length;
     final score = progress.score;
-    // WAJIB 6: Ukuran Dinamis
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      // <<< PERUBAHAN: Latar belakang
+      backgroundColor: softWhite,
       appBar: AppBar(
-        title: const Text('Hasil Kuis', style: TextStyle(fontFamily: 'CustomFont')),
+        // <<< PERUBAHAN: Warna AppBar
+        backgroundColor: softPink,
+        // <<< PERUBAHAN: Warna teks AppBar
+        foregroundColor: darkText,
+        title: const Text(
+          'Hasil Kuis',
+          // <<< PERUBAHAN: Font AppBar
+          style: TextStyle(
+            fontFamily: 'CustomFont',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         automaticallyImplyLeading: false, // Nonaktifkan tombol kembali
+        centerTitle: true,
+        elevation: 0, // Opsional: flat design
       ),
       body: Center(
         child: Padding(
@@ -30,28 +49,44 @@ class ResultScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              // WAJIB 4: Ikon/Gambar
-              Icon(Icons.emoji_events, size: screenHeight * 0.1, color: Colors.amber),
+              // <<< PERUBAHAN: Warna Ikon
+              Icon(
+                Icons.emoji_events, // Ikon piala
+                size: screenHeight * 0.1,
+                color: hintPink, // Ganti dari amber ke pink tua
+              ),
               const SizedBox(height: 20),
               Text(
                 'Selamat, ${progress.username}!',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'CustomFont',
+                  // <<< PERUBAHAN: Warna teks
+                  color: darkText,
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 30),
               Card(
-                elevation: 5,
+                elevation: 3, // Kurangi bayangan agar lebih soft
+                // <<< PERUBAHAN: Warna kartu
+                color: Colors.white, // Putih bersih agar kontras
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
                 child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(25.0),
                   child: Column(
                     children: [
-                      const Text(
+                      Text(
                         'Skor Akhir Anda:',
-                        style: TextStyle(fontSize: 20),
+                        // <<< PERUBAHAN: Font & Warna
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontFamily: 'CustomFont',
+                          color: darkText,
+                        ),
                       ),
                       const SizedBox(height: 10),
                       Text(
@@ -59,7 +94,9 @@ class ResultScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: screenHeight * 0.08,
                           fontWeight: FontWeight.bold,
-                          color: Colors.blueAccent,
+                          fontFamily: 'CustomFont',
+                          // <<< PERUBAHAN: Warna skor
+                          color: hintPink, // Ganti dari biru ke pink tua
                         ),
                       ),
                     ],
@@ -67,14 +104,15 @@ class ResultScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 40),
-              CustomButton( // WAJIB 3
+              CustomButton(
                 text: 'Main Lagi',
                 onPressed: () {
                   progress.reset();
-                  // WAJIB 2: Navigasi
-                  Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+                  Navigator.of(context)
+                      .pushNamedAndRemoveUntil('/', (route) => false);
                 },
-                color: Colors.green,
+                // <<< PERUBAHAN: Warna tombol
+                color: softPink, // Ganti dari hijau ke pink
               ),
             ],
           ),
